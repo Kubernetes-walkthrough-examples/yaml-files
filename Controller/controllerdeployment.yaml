@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment             
+metadata:
+  name: controllerdemo
+  namespace: controllerdemo
+spec:
+  selector:
+    matchLabels:
+      app: controllerdemo
+  replicas: 2                                           
+  strategy:
+    type: RollingUpdate                                 
+    rollingUpdate:
+      maxUnavailable: 1                                 
+      maxSurge: 1                                       
+  template:                                             
+    metadata:
+      labels:
+        app: controllerdemo                         
+    spec:
+      volumes:
+      - name: html
+        emptyDir: {}                                         
+      containers:
+      - image: nginx:1.16.1
+        name: controllerdemo-container  
+        volumeMounts:
+        - name: html
+          mountPath: /usr/share/nginx/html  
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 80
